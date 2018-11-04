@@ -1,17 +1,17 @@
 import java.util.ArrayList;
 
 public class Hypocycloid {
-	private int fixedRadius;
-	private int movingRadius;
-	private int penOffset;
-	private int loops;
-	private int scale;
-	private int xOffset;
-	private int yOffset;
+	private double fixedRadius;
+	private double movingRadius;
+	private double penOffset;
+	private double loops;
+	private double scale;
+	private double xOffset;
+	private double yOffset;
 	private final double TwoPI;
 	//TODO: changing the scale
 	
-	public Hypocycloid(int fixedRadius, int movingRadius, int penOffset, int loops, int scale, int xOffset, int yOffset) {
+	public Hypocycloid(double fixedRadius, double movingRadius, double penOffset, double loops, double scale, double xOffset, double yOffset) {
 		this.fixedRadius = fixedRadius;
 		this.movingRadius = movingRadius;
 		this.penOffset = penOffset;
@@ -23,9 +23,9 @@ public class Hypocycloid {
 	}
 	
 	public ArrayList<Tuple<Double, Double>> getCoordList() {
-		int n = fixedRadius;
-		int m = movingRadius;
-		int f = penOffset;
+		double n = fixedRadius;
+		double m = movingRadius;
+		double f = penOffset;
 		
 		ArrayList<Tuple<Double, Double>> coordList = new ArrayList<Tuple<Double, Double>>();
 		
@@ -33,7 +33,6 @@ public class Hypocycloid {
 			double t = theta / n;
 			double x =  (1 - (n / m)) * Math.cos(n * t) + ((f * (n / m)) * Math.cos((m - n) * t));
 			double y =   (1 - (n / m)) * Math.sin(n * t) - ((f * (n / m)) * Math.sin((m - n) * t));
-			System.out.println(x + " " +  y);
 			x *= scale;
 			y *= scale;
 			x += xOffset;

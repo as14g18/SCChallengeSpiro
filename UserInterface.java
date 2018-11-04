@@ -34,13 +34,13 @@ public class UserInterface extends Application{
 		SliderBuilder sliderBuilder = new SliderBuilder(); // Factory class for building sliders in one line
 		LabelBuilder labelBuilder = new LabelBuilder(); // Label factory
 		
-		Slider sliderFixedRadius = sliderBuilder.buildSlider(1, 500, 250, false); // variable n
-		Slider sliderMovingRadius = sliderBuilder.buildSlider(1, 500, 56, false); // variable m
-		Slider sliderPenOffset = sliderBuilder.buildSlider(-10, 10, 5, false); // variable f
-		Slider sliderLoops = sliderBuilder.buildSlider(0, 150, 20, false);
-		Slider sliderScale = sliderBuilder.buildSlider(1, 20, 10, false);
-		Slider sliderXOffset = sliderBuilder.buildSlider(-500, 500, -100, false);
-		Slider sliderYOffset = sliderBuilder.buildSlider(-500, 500, 0, false);
+		Slider sliderFixedRadius = sliderBuilder.buildSlider(1, 100, 31, 0.1); // variable n
+		Slider sliderMovingRadius = sliderBuilder.buildSlider(1, 100, 12, 0.1); // variable m
+		Slider sliderPenOffset = sliderBuilder.buildSlider(-10, 10, 2.4, 0.01); // variable f
+		Slider sliderLoops = sliderBuilder.buildSlider(0, 150, 20, 0.1);
+		Slider sliderScale = sliderBuilder.buildSlider(0.1, 200, 10, 0.1);
+		Slider sliderXOffset = sliderBuilder.buildSlider(-500, 500, -100, 1);
+		Slider sliderYOffset = sliderBuilder.buildSlider(-500, 500, 0, 1);
 		Label labelFixedRadius = labelBuilder.buildLabel("  Fixed radius:");
 		Label labelMovingRadius = labelBuilder.buildLabel("  Moving radius:");
 		Label labelPenOffset = labelBuilder.buildLabel("  Pen offset:");
@@ -79,9 +79,11 @@ public class UserInterface extends Application{
 		Scene scene = new Scene(borderPane, WINDOW_WIDTH, WINDOW_HEIGHT);
 		window.setScene(scene);
 		window.show();
+		
+		paint(gc, sliderFixedRadius.getValue(), sliderMovingRadius.getValue(), sliderPenOffset.getValue(), sliderLoops.getValue(), sliderScale.getValue(), sliderXOffset.getValue(), sliderYOffset.getValue()); // paint the initial spirograph
 	}
 	
-	private void paint(GraphicsContext gc, int fixedRadius, int movingRadius, int penOffset, int loops, int scale, int xOffset, int yOffset) {
+	private void paint(GraphicsContext gc, double fixedRadius, double movingRadius, double penOffset, double loops, double scale, double xOffset, double yOffset) {
 		// paints the spirograph
 		// Hypocycloid hypocloid = new Hypocycloid(250, 56, 5, 1, 10, -100, 0);
 		Hypocycloid hypocycloid = new Hypocycloid(fixedRadius, movingRadius, penOffset, loops, scale, xOffset, yOffset);
@@ -103,7 +105,7 @@ public class UserInterface extends Application{
             @Override
             public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
             	gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-    			paint(gc, (int)sliderFixedRadius.getValue(), (int)sliderMovingRadius.getValue(), (int)sliderPenOffset.getValue(), (int)sliderLoops.getValue(), (int)sliderScale.getValue(), (int)sliderXOffset.getValue(), (int)sliderYOffset.getValue());
+    			paint(gc, sliderFixedRadius.getValue(), sliderMovingRadius.getValue(), sliderPenOffset.getValue(), sliderLoops.getValue(), sliderScale.getValue(), sliderXOffset.getValue(), sliderYOffset.getValue());
             }
         });
 	}
