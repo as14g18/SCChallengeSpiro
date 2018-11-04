@@ -33,6 +33,7 @@ public class Hypocycloid {
 			double t = theta / n;
 			double x =  (1 - (n / m)) * Math.cos(n * t) + ((f * (n / m)) * Math.cos((m - n) * t));
 			double y =   (1 - (n / m)) * Math.sin(n * t) - ((f * (n / m)) * Math.sin((m - n) * t));
+			System.out.println(x + " " +  y);
 			x *= scale;
 			y *= scale;
 			x += xOffset;

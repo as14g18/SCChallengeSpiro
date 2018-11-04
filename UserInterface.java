@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -9,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.canvas.Canvas;
 
@@ -30,10 +34,9 @@ public class UserInterface extends Application{
 		SliderBuilder sliderBuilder = new SliderBuilder(); // Factory class for building sliders in one line
 		LabelBuilder labelBuilder = new LabelBuilder(); // Label factory
 		
-		Slider sliderFixedRadius = sliderBuilder.buildSlider(0, 500, 250, false); // variable n
-		sliderFixedRadius.setValue(250);
-		Slider sliderMovingRadius = sliderBuilder.buildSlider(0, 500, 56, false); // variable m
-		Slider sliderPenOffset = sliderBuilder.buildSlider(0, 10, 5, false); // variable f
+		Slider sliderFixedRadius = sliderBuilder.buildSlider(1, 500, 250, false); // variable n
+		Slider sliderMovingRadius = sliderBuilder.buildSlider(1, 500, 56, false); // variable m
+		Slider sliderPenOffset = sliderBuilder.buildSlider(-10, 10, 5, false); // variable f
 		Slider sliderLoops = sliderBuilder.buildSlider(0, 150, 20, false);
 		Slider sliderScale = sliderBuilder.buildSlider(1, 20, 10, false);
 		Slider sliderXOffset = sliderBuilder.buildSlider(-500, 500, -100, false);
@@ -67,8 +70,12 @@ public class UserInterface extends Application{
 		
 		buttonDrawGraph.setOnAction(e -> {
 			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-			paint(gc, buttonDrawGraph, (int)sliderFixedRadius.getValue(), (int)sliderMovingRadius.getValue(), (int)sliderPenOffset.getValue(), (int)sliderLoops.getValue(), (int)sliderScale.getValue(), (int)sliderXOffset.getValue(), (int)sliderYOffset.getValue());
+			paint(gc, (int)sliderFixedRadius.getValue(), (int)sliderMovingRadius.getValue(), (int)sliderPenOffset.getValue(), (int)sliderLoops.getValue(), (int)sliderScale.getValue(), (int)sliderXOffset.getValue(), (int)sliderYOffset.getValue());
 		});
+		Slider[] sliderArray = new Slider[]{sliderFixedRadius, sliderMovingRadius, sliderPenOffset, sliderLoops, sliderScale, sliderXOffset, sliderYOffset}; 
+		for (Slider slider : sliderArray) {
+			makeSliderUpdateDynamically(slider, canvas, gc, sliderFixedRadius, sliderMovingRadius, sliderPenOffset, sliderLoops, sliderScale, sliderXOffset, sliderYOffset);
+		}
 		
 		BorderPane borderPane = new BorderPane();
 		borderPane.setLeft(leftMenu);
@@ -79,17 +86,31 @@ public class UserInterface extends Application{
 		window.setScene(scene);
 		window.show();
 	}
-	private void paint(GraphicsContext gc, Button buttonDrawGraph, int fixedRadius, int movingRadius, int penOffset, int loops, int scale, int xOffset, int yOffset) {
+	
+	private void paint(GraphicsContext gc, int fixedRadius, int movingRadius, int penOffset, int loops, int scale, int xOffset, int yOffset) {
 		// paints the spirograph
 		// Hypocycloid hypocloid = new Hypocycloid(250, 56, 5, 1, 10, -100, 0);
 		Hypocycloid hypocycloid = new Hypocycloid(fixedRadius, movingRadius, penOffset, loops, scale, xOffset, yOffset);
 		
-		
 		ArrayList<Tuple<Double, Double>> coordList = new ArrayList<Tuple<Double, Double>>();
 		coordList = hypocycloid.getCoordList();
 		
-		Paintbrush paintbrush = new Paintbrush(gc, coordList, buttonDrawGraph, WINDOW_WIDTH, WINDOW_HEIGHT);
-		Runnable paintbrushThread = paintbrush;
-		new Thread(paintbrushThread).start();
+		gc.setStroke(Color.RED);
+		for (int i = 0; i < coordList.size() - 1; i++) {
+			Tuple<Double, Double> point1 = coordList.get(i);
+			Tuple<Double, Double> point2 = coordList.get(i + 1);
+			gc.strokeLine(point1.getX() + WINDOW_WIDTH / 2, point1.getY() + WINDOW_HEIGHT / 2, point2.getX() + WINDOW_WIDTH / 2, point2.getY() + WINDOW_HEIGHT / 2);
+		}
+	}
+	
+	private void makeSliderUpdateDynamically(Slider masterSlider, Canvas canvas, GraphicsContext gc, Slider sliderFixedRadius, Slider sliderMovingRadius, Slider sliderPenOffset, Slider sliderLoops, Slider sliderScale, Slider sliderXOffset, Slider sliderYOffset) {
+		masterSlider.valueProperty().addListener(new ChangeListener<Object>() {
+
+            @Override
+            public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
+            	gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    			paint(gc, (int)sliderFixedRadius.getValue(), (int)sliderMovingRadius.getValue(), (int)sliderPenOffset.getValue(), (int)sliderLoops.getValue(), (int)sliderScale.getValue(), (int)sliderXOffset.getValue(), (int)sliderYOffset.getValue());
+            }
+        });
 	}
 }
