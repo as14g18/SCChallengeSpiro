@@ -48,7 +48,6 @@ public class UserInterface extends Application{
 		Label labelScale = labelBuilder.buildLabel("  Scale:");
 		Label labelXOffset = labelBuilder.buildLabel("  x Offset:");
 		Label labelYOffset = labelBuilder.buildLabel("  y Offset:");
-		Button buttonDrawGraph = new Button("Draw Spirograph");
 		
 		Canvas canvas = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT);
 		Pane wrapperPane = new Pane();
@@ -65,13 +64,8 @@ public class UserInterface extends Application{
 				labelLoops, sliderLoops,
 				labelScale, sliderScale, 
 				labelXOffset, sliderXOffset, 
-				labelYOffset, sliderYOffset, 
-				buttonDrawGraph);
+				labelYOffset, sliderYOffset);
 		
-		buttonDrawGraph.setOnAction(e -> {
-			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-			paint(gc, (int)sliderFixedRadius.getValue(), (int)sliderMovingRadius.getValue(), (int)sliderPenOffset.getValue(), (int)sliderLoops.getValue(), (int)sliderScale.getValue(), (int)sliderXOffset.getValue(), (int)sliderYOffset.getValue());
-		});
 		Slider[] sliderArray = new Slider[]{sliderFixedRadius, sliderMovingRadius, sliderPenOffset, sliderLoops, sliderScale, sliderXOffset, sliderYOffset}; 
 		for (Slider slider : sliderArray) {
 			makeSliderUpdateDynamically(slider, canvas, gc, sliderFixedRadius, sliderMovingRadius, sliderPenOffset, sliderLoops, sliderScale, sliderXOffset, sliderYOffset);
